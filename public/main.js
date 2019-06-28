@@ -9,7 +9,11 @@ let mouse = 0;
 
 function preload() {
     obj_diana = loadModel('src/obj_diana.obj');
-    txt_diana = loadImage('src/txt_diana.png')
+    txt_diana = loadImage('src/txt_diana.png');
+    obj_volibear = loadModel('src/obj_volibear.obj');
+    txt_volibear = loadImage('src/txt_volibear.png');
+    obj_jinx = loadModel('src/obj_jinx.obj');
+    txt_jinx = loadImage('src/txt_jinx.png');
     hexagon = loadModel('src/obj_hexagon.obj');
     brick = loadImage('src/txt_hexagon.png');
 }
@@ -17,7 +21,7 @@ function preload() {
 function setup() {
     createCanvas(width, height, WEBGL);
     chess = new Game();
-    //chess.newHero('diana');
+    chess.newHero('diana');
     brick.resize(1000, 1000);
     setBoundings();
 }
@@ -35,7 +39,7 @@ function draw() {
             mouse = i;
         }
     }
-    //chess.hero[0].position = chess.board.blocks[mouse][0];
+    chess.hero[0].position = chess.board.blocks[mouse][0];
 }
 
 function setBoundings() {

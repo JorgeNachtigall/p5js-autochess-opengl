@@ -16,8 +16,7 @@ class Hero {
             texture(txt_diana);
             translate(this.position);
             scale(0.7);
-            rotate(-25, createVector(0, 1, 0))
-            rotate(-350, createVector(1, 0, 0));
+            rotate(PI / 2, createVector(1, 0, 0));
             model(obj_diana);
             pop();
         }
