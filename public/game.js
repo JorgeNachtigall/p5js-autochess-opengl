@@ -1,6 +1,7 @@
 class Game {
     constructor() {
         this.board = new Board();
+        this.interface = new Interface();
         this.hero = [0, 0, 0];
         this.maxHero = 3;
     }
@@ -15,6 +16,7 @@ class Game {
     }
 
     draw() {
+        this.interface.draw();
         push();
         rotate(-150, createVector(1, 0, 0));
         translate(createVector(0, 150, -50));
