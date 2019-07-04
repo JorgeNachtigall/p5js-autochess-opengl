@@ -8,16 +8,17 @@ class Hero {
         this.attack = attack;
         this.range = range;
         this.scale = 0.5;
+        this.followMouse = false;
     }
 
     draw() {
         if (this.id == 'diana') {
             push();
-            texture(txt_diana);
+            texture(models[0].texture);
             translate(this.position);
             scale(0.7);
             rotate(PI / 2, createVector(1, 0, 0));
-            model(obj_diana);
+            model(models[0].model);
             pop();
         }
     }

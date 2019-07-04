@@ -5,15 +5,30 @@ let brick;
 let width = 800;
 let height = 800;
 let bounding = [];
+let boundingInventory = [];
 let mouse = 0;
+let models = [];
+let modelsMaxIndex = 2;
 
 function preload() {
-    obj_diana = loadModel('src/obj_diana.obj');
-    txt_diana = loadImage('src/txt_diana.png');
-    obj_volibear = loadModel('src/obj_volibear.obj');
-    txt_volibear = loadImage('src/txt_volibear.png');
-    obj_jinx = loadModel('src/obj_jinx.obj');
-    txt_jinx = loadImage('src/txt_jinx.png');
+    models[0] = {
+        model: loadModel('src/obj_diana.obj'),
+        texture: loadImage('src/txt_diana.png'),
+        inventoryScale: 0.65
+    };
+
+    models[1] = {
+        model: loadModel('src/obj_volibear.obj'),
+        texture: loadImage('src/txt_volibear.png'),
+        inventoryScale: 0.45
+    };
+
+    models[2] = {
+        model: loadModel('src/obj_jinx.obj'),
+        texture: loadImage('src/txt_jinx.png'),
+        inventoryScale: 0.6
+    };
+
     hexagon = loadModel('src/obj_hexagon.obj');
     brick = loadImage('src/txt_hexagon.png');
 }
@@ -21,7 +36,7 @@ function preload() {
 function setup() {
     createCanvas(width, height, WEBGL);
     chess = new Game();
-    chess.newHero('diana');
+    //chess.newHero('diana');
     brick.resize(1000, 1000);
     setBoundings();
 }
@@ -30,16 +45,14 @@ function draw() {
     background(200);
     angleMode(RADIANS);
     noStroke();
-    chess.draw();
     print(mouseX - (width / 2), mouseY - (height / 2));
-    for (let i = 0; i < 18; i++) {
-        //bounding[i].debug();
-        if (mouseX - (width / 2) < bounding[i].right && mouseX - (width / 2) > bounding[i].left &&
-            mouseY - (height / 2) > bounding[i].top && mouseY - (height / 2) < bounding[i].bottom) {
-            mouse = i;
-        }
-    }
-    chess.hero[0].position = chess.board.blocks[mouse][0];
+    chess.draw();
+    chess.mouseTrackerBoard();
+    //chess.mouseTrackerStore();
+}
+
+function mouseClicked() {
+
 }
 
 function setBoundings() {
@@ -61,4 +74,8 @@ function setBoundings() {
     bounding.push(new Bounding(-125, -30, 58));
     bounding.push(new Bounding(60, -30, 58));
     bounding.push(new Bounding(245, -30, 58));
+
+    boundingInventory.push(new Bounding(-185, 245, 140));
+    boundingInventory.push(new Bounding(10, 245, 140));
+    boundingInventory.push(new Bounding(195, 245, 140));
 }
