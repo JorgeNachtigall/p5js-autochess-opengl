@@ -6,9 +6,6 @@ class Interface {
         this.menuModels.background(120);
         this.store = new Store();
         this.inventory = new Inventory();
-        this.inventory.add(0);
-        this.inventory.add(0);
-        this.inventory.add(0);
     }
 
     draw() {

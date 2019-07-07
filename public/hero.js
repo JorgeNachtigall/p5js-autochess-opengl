@@ -1,25 +1,25 @@
 class Hero {
-    constructor(id, life, mana, attack, range) {
+    constructor(id, life, attack, range, isEnemy) {
         this.id = id;
         this.position = createVector(0, 0, 0);
         this.visibility = true;
         this.life = life;
-        this.mana = mana;
         this.attack = attack;
         this.range = range;
-        this.scale = 0.5;
         this.followMouse = false;
+        this.isEnemy = isEnemy;
+        this.blockPos = 0;
     }
 
     draw() {
-        if (this.id == 'diana') {
-            push();
-            texture(models[0].texture);
-            translate(this.position);
-            scale(0.7);
-            rotate(PI / 2, createVector(1, 0, 0));
-            model(models[0].model);
-            pop();
-        }
+        push();
+        texture(models[this.id].texture);
+        translate(this.position);
+        scale(models[this.id].inventoryScale);
+        rotate(PI / 2, createVector(1, 0, 0));
+        if (this.isEnemy)
+            rotate(PI, createVector(0, 1, 0));
+        model(models[this.id].model);
+        pop();
     }
 }

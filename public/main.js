@@ -6,9 +6,13 @@ let width = 800;
 let height = 800;
 let bounding = [];
 let boundingInventory = [];
-let mouse = 0;
+let boundingStore = [];
+let mouse = 1;
 let models = [];
 let modelsMaxIndex = 2;
+let gamePhase = 1;
+let dragHero = -1;
+let graph;
 
 function preload() {
     models[0] = {
@@ -34,9 +38,13 @@ function preload() {
 }
 
 function setup() {
+    clock = createDiv('Time: 20');
+    clock.position(25, 690);
+    clock.id = 'clock';
+    clock.style('color', 'black');
+    clock.style('font-size', '40px');
     createCanvas(width, height, WEBGL);
     chess = new Game();
-    //chess.newHero('diana');
     brick.resize(1000, 1000);
     setBoundings();
 }
@@ -45,14 +53,80 @@ function draw() {
     background(200);
     angleMode(RADIANS);
     noStroke();
-    print(mouseX - (width / 2), mouseY - (height / 2));
+    //print(mouseX - (width / 2), mouseY - (height / 2));
     chess.draw();
     chess.mouseTrackerBoard();
-    //chess.mouseTrackerStore();
+    gameLogic();
+    //print(mouse);
 }
 
 function mouseClicked() {
+    if (gamePhase == 1) {
+        if (chess.interface.store.slots[chess.mouseTrackerStore()] != undefined) {
+            chess.interface.inventory.add(chess.interface.store.slots[chess.mouseTrackerStore()]);
+            chess.interface.store.visibility = false;
+            gamePhase = 2;
+            chess.generateEnemies();
+            setTimeout(addSec, 1000);
+        }
+    } else if (gamePhase == 2) {
+        if (chess.interface.inventory.slots[chess.mouseTrackerInventory()] != undefined && chess.interface.inventory.slots[chess.mouseTrackerInventory()] != -1) {
+            if (chess.heroesOnBoard < 3) {
+                dragHero = chess.newHero(chess.interface.inventory.slots[chess.mouseTrackerInventory()], 10000, 100, false);
+                chess.interface.inventory.slots[chess.mouseTrackerInventory()] = -1;
+                gamePhase = 3;
+            }
+        } else if (chess.board.blocks[mouse][1] != -1) {
+            dragHero = chess.board.blocks[mouse][1];
+            chess.board.blocks[mouse][1] = -1;
+            gamePhase = 3;
+        }
 
+
+    } else if (gamePhase == 3) {
+        if (chess.board.blocks[mouse][1] == -1) {
+            chess.board.blocks[mouse][1] = dragHero;
+            chess.hero[dragHero].blockPos = mouse;
+            dragHero = -1;
+            gamePhase = 2;
+            chess.interface.store.generate();
+        }
+    }
+
+}
+
+function gameLogic() {
+    if (gamePhase == 3) {
+        if (dragHero != -1) {
+            chess.hero[dragHero].position = chess.board.blocks[mouse][0];
+        }
+    }
+    if (gamePhase == 4) {
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (chess.hero[i] != -1 && chess.enemy[j] != -1) {
+                    chess.attack(chess.hero[i], chess.enemy[j]);
+                }
+            }
+        }
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (chess.hero[j] != -1 && chess.enemy[i] != -1) {
+                    chess.attack(chess.enemy[i], chess.hero[j]);
+                }
+            }
+        }
+
+        for (let i = 0; i < 3; i++) {
+            if (chess.enemy[i] != -1) {
+                break;
+            } else {
+                chess.interface.store.visibility = true;
+                gamePhase = 1;
+            }
+        }
+
+    }
 }
 
 function setBoundings() {
@@ -78,4 +152,19 @@ function setBoundings() {
     boundingInventory.push(new Bounding(-185, 245, 140));
     boundingInventory.push(new Bounding(10, 245, 140));
     boundingInventory.push(new Bounding(195, 245, 140));
+
+    boundingStore.push(new Bounding(-280, -390, 140));
+    boundingStore.push(new Bounding(-55, -390, 140));
+    boundingStore.push(new Bounding(160, -390, 140));
+}
+
+function addSec() {
+    const prevSec = parseInt(clock.html().substring(6));
+    if (prevSec > 0) {
+        clock.html('Time: ' + (prevSec - 1));
+        setTimeout(addSec, 1000);
+    } else {
+        gamePhase = 4;
+        clock.html('Time: ' + 20);
+    }
 }
