@@ -1,6 +1,7 @@
 class Hero {
     constructor(id, life, attack, range, isEnemy) {
         this.id = id;
+        this.name = models[this.id].name;
         this.position = createVector(0, 0, 0);
         this.visibility = true;
         this.life = life;

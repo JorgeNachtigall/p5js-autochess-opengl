@@ -23,7 +23,7 @@ class Game {
     }
 
     newEnemy() {
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < 1; i++) {
             if (this.enemy[i] == -1) {
                 this.enemy[i] = new Hero(0, 300, 100, true, true);
                 this.enemy[i].position = this.board.blocks[this.placeEnemy()][0];
@@ -93,17 +93,19 @@ class Game {
     }
 
     generateEnemies() {
+        battleLog.html(battleLog.html() + '<br>-- ROUND ' + this.round + ' --');
         for (let i = 0; i < this.round; i++) {
             this.newEnemy();
         }
     }
 
     attack(source, target) {
+        print(source);
+        print(target);
         if (target.life > 0) {
             let hit = Math.floor(Math.random() * (source.attack - source.attack / 2)) + source.attack / 2;
-            target.life -= hit;
-            print(hit);
-            print(target);
+            target.life = target.life - hit;
+            battleLog.html(battleLog.html() + '<br> -> ' + source.name + ' attacks ' + target.name + ' and takes ' + hit + ' HP. ' + target.name + ' HP is now ' + target.life + '.');
         }
         this.checkLife();
     }

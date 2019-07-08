@@ -13,24 +13,28 @@ let modelsMaxIndex = 2;
 let gamePhase = 1;
 let dragHero = -1;
 let graph;
+let battleLog;
 
 function preload() {
     models[0] = {
         model: loadModel('src/obj_diana.obj'),
         texture: loadImage('src/txt_diana.png'),
-        inventoryScale: 0.65
+        inventoryScale: 0.65,
+        name: 'Diana'
     };
 
     models[1] = {
         model: loadModel('src/obj_volibear.obj'),
         texture: loadImage('src/txt_volibear.png'),
-        inventoryScale: 0.45
+        inventoryScale: 0.45,
+        name: 'Volibear'
     };
 
     models[2] = {
         model: loadModel('src/obj_jinx.obj'),
         texture: loadImage('src/txt_jinx.png'),
-        inventoryScale: 0.6
+        inventoryScale: 0.6,
+        name: 'Jinx'
     };
 
     hexagon = loadModel('src/obj_hexagon.obj');
@@ -38,12 +42,28 @@ function preload() {
 }
 
 function setup() {
-    clock = createDiv('Time: 20');
+    //clock
+    clock = createDiv('Time: 5');
     clock.position(25, 690);
     clock.id = 'clock';
     clock.style('color', 'black');
     clock.style('font-size', '40px');
+
     createCanvas(width, height, WEBGL);
+
+    //battle log 
+    battleLog = createDiv('<center> BATTLE LOG </center>');
+    battleLog.html(battleLog.html() + '<br> * TESTANDO')
+    battleLog.id('battleLog');
+    //battleLog.position(0, 800);
+    battleLog.id = 'battleLog';
+    battleLog.style('height', '800px');
+    battleLog.style('width', '400px');
+    battleLog.style('border', '1px solid #ccc');
+    battleLog.style('overflow', 'auto');
+    battleLog.style('display', 'inline-block');
+    battleLog.style('position', 'static');
+
     chess = new Game();
     brick.resize(1000, 1000);
     setBoundings();
@@ -103,30 +123,57 @@ function gameLogic() {
     }
     if (gamePhase == 4) {
         for (let i = 0; i < 3; i++) {
+            let leastDist = 999;
+            let target = 0;
             for (let j = 0; j < 3; j++) {
                 if (chess.hero[i] != -1 && chess.enemy[j] != -1) {
-                    chess.attack(chess.hero[i], chess.enemy[j]);
+                    let tempDist = euclidianDist(floor(chess.hero[i].blockPos / 7), floor(chess.hero[i].blockPos % 7), chess.enemy[j].blockPos / 7, chess.enemy[j].blockPos % 7);
+                    if (tempDist < leastDist) {
+                        leastDist = tempDist;
+                        target = j;
+                        print(leastDist, target);
+                    }
+                    //chess.attack(chess.hero[i], chess.enemy[target]);
                 }
             }
+            if (chess.hero[i] != -1)
+                chess.attack(chess.hero[i], chess.enemy[target]);
         }
         for (let i = 0; i < 3; i++) {
+            let leastDist = 999;
+            let target = 0;
             for (let j = 0; j < 3; j++) {
                 if (chess.hero[j] != -1 && chess.enemy[i] != -1) {
-                    chess.attack(chess.enemy[i], chess.hero[j]);
+                    let tempDist = euclidianDist(floor(chess.enemy[i].blockPos / 7), floor(chess.enemy[i].blockPos % 7), chess.hero[j].blockPos / 7, chess.hero[j].blockPos % 7);
+                    if (tempDist < leastDist) {
+                        leastDist = tempDist;
+                        target = j;
+                    }
                 }
             }
+            if (chess.enemy[i] != -1)
+                chess.attack(chess.enemy[i], chess.hero[target]);
         }
+
+        let flag = false;
 
         for (let i = 0; i < 3; i++) {
             if (chess.enemy[i] != -1) {
+                flag = true;
                 break;
-            } else {
-                chess.interface.store.visibility = true;
-                gamePhase = 1;
             }
         }
 
+        if (flag == false) {
+            chess.interface.store.visibility = true;
+            gamePhase = 1;
+        }
+
     }
+}
+
+function euclidianDist(x1, y1, x2, y2) {
+    return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
 }
 
 function setBoundings() {
@@ -165,6 +212,6 @@ function addSec() {
         setTimeout(addSec, 1000);
     } else {
         gamePhase = 4;
-        clock.html('Time: ' + 20);
+        clock.html('Time: ' + 3);
     }
 }
