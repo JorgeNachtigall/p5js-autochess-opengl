@@ -80,7 +80,6 @@ function draw() {
     background(200);
     angleMode(RADIANS);
     noStroke();
-    //print(mouseX - (width / 2), mouseY - (height / 2));
     loadRounds();
     if (win) {
         battleLog.html(battleLog.html() + '<br><br><centeR>>>> You win! <<<</center>');
@@ -91,7 +90,6 @@ function draw() {
         chess.mouseTrackerBoard();
         gameLogic();
     }
-    //print(mouse);
 }
 
 function mouseClicked() {
