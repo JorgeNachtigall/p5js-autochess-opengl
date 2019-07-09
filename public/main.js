@@ -14,6 +14,9 @@ let gamePhase = 1;
 let dragHero = -1;
 let graph;
 let battleLog;
+let roundContent = [];
+let win = false;
+let dead = false;
 
 function preload() {
     models[0] = {
@@ -49,7 +52,7 @@ function preload() {
 
 function setup() {
     //clock
-    clock = createDiv('Time: 5');
+    clock = createDiv('Time: 20');
     clock.position(25, 690);
     clock.id = 'clock';
     clock.style('color', 'black');
@@ -59,7 +62,6 @@ function setup() {
 
     //battle log 
     battleLog = createDiv('<center> BATTLE LOG </center>');
-    battleLog.html(battleLog.html() + '<br> * TESTANDO')
     battleLog.id('battleLog');
     //battleLog.position(0, 800);
     battleLog.id = 'battleLog';
@@ -80,9 +82,16 @@ function draw() {
     angleMode(RADIANS);
     noStroke();
     //print(mouseX - (width / 2), mouseY - (height / 2));
-    chess.draw();
-    chess.mouseTrackerBoard();
-    gameLogic();
+    loadRounds();
+    if (win) {
+        battleLog.html(battleLog.html() + '<br><br><centeR>>>> You win! <<<</center>');
+    } else if (dead) {
+        battleLog.html(battleLog.html() + '<br><br><centeR>>>> You are dead! <<<</center>');
+    } else {
+        chess.draw();
+        chess.mouseTrackerBoard();
+        gameLogic();
+    }
     //print(mouse);
 }
 
@@ -139,7 +148,6 @@ function gameLogic() {
                         target = j;
                         print(leastDist, target);
                     }
-                    //chess.attack(chess.hero[i], chess.enemy[target]);
                 }
             }
             if (chess.hero[i] != -1)
@@ -162,6 +170,7 @@ function gameLogic() {
         }
 
         let flag = false;
+        let flagDead = true;
 
         for (let i = 0; i < 3; i++) {
             if (chess.enemy[i] != -1) {
@@ -170,7 +179,21 @@ function gameLogic() {
             }
         }
 
+        for (let i = 0; i < 3; i++) {
+            if (chess.hero[i] != -1) {
+                flagDead = false;
+            }
+        }
+
+        if (flagDead == true) {
+            dead = true;
+        }
+
         if (flag == false) {
+            chess.round++;
+            if (chess.round > 4) {
+                win = true;
+            }
             chess.interface.store.visibility = true;
             gamePhase = 1;
         }
@@ -218,6 +241,33 @@ function addSec() {
         setTimeout(addSec, 1000);
     } else {
         gamePhase = 4;
-        clock.html('Time: ' + 3);
+        clock.html('Time: ' + 20);
+    }
+}
+
+function loadRounds() {
+    roundContent[0] = {
+        enemyNumber: 1,
+        enemyModel: [0]
+    }
+
+    roundContent[1] = {
+        enemyNumber: 1,
+        enemyModel: [2]
+    }
+
+    roundContent[2] = {
+        enemyNumber: 2,
+        enemyModel: [1, 2]
+    }
+
+    roundContent[3] = {
+        enemyNumber: 2,
+        enemyModel: [1, 1]
+    }
+
+    roundContent[4] = {
+        enemyNumber: 3,
+        enemyModel: [0, 1, 2]
     }
 }

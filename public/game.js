@@ -9,7 +9,7 @@ class Game {
         this.modelSelected = 0;
         this.heroesOnBoard = 0;
         this.enemiesOnBoard = 0;
-        this.round = 3;
+        this.round = 0;
     }
 
     newHero(id) {
@@ -23,9 +23,10 @@ class Game {
     }
 
     newEnemy() {
-        for (let i = 0; i < 1; i++) {
+        for (let i = 0; i < roundContent[this.round].enemyNumber; i++) {
+            print(roundContent[this.round].enemyNumber);
             if (this.enemy[i] == -1) {
-                this.enemy[i] = new Hero(0, 300, 100, true, true);
+                this.enemy[i] = new Hero(roundContent[this.round].enemyModel[i], true);
                 this.enemy[i].position = this.board.blocks[this.placeEnemy()][0];
                 this.enemy[i].blockPos = this.placeEnemy();
                 this.board.blocks[this.placeEnemy()][1] = 0;
@@ -93,8 +94,8 @@ class Game {
     }
 
     generateEnemies() {
-        battleLog.html(battleLog.html() + '<br>-- ROUND ' + this.round + ' --');
-        for (let i = 0; i < this.round; i++) {
+        battleLog.html(battleLog.html() + '<br><br><br><center>-- ROUND ' + this.round + ' --</center>');
+        for (let i = 0; i < roundContent[this.round].enemyNumber; i++) {
             this.newEnemy();
         }
     }
@@ -105,7 +106,10 @@ class Game {
         if (target.life > 0) {
             let hit = Math.floor(Math.random() * (source.attack - source.attack / 2)) + source.attack / 2;
             target.life = target.life - hit;
-            battleLog.html(battleLog.html() + '<br> -> ' + source.name + ' attacks ' + target.name + ' and takes ' + hit + ' HP. ' + target.name + ' HP is now ' + target.life + '.');
+            if (source.isEnemy == true)
+                battleLog.html(battleLog.html() + '<br><br> E -> ' + source.name + ' attacks ' + target.name + ' and takes ' + hit + ' HP. ' + target.name + ' HP is now ' + target.life + '.');
+            if (source.isEnemy == false)
+                battleLog.html(battleLog.html() + '<br><br> A -> ' + source.name + ' attacks ' + target.name + ' and takes ' + hit + ' HP. ' + target.name + ' HP is now ' + target.life + '.');
         }
         this.checkLife();
     }
@@ -115,10 +119,12 @@ class Game {
             if (this.hero[i] != -1 && this.hero[i].life <= 0) {
                 this.board.blocks[this.hero[i].blockPos][1] = -1;
                 this.hero[i] = -1;
+                this.heroesOnBoard--;
             }
             if (this.enemy[i] != -1 && this.enemy[i].life <= 0) {
                 this.board.blocks[this.enemy[i].blockPos][1] = -1;
                 this.enemy[i] = -1;
+                this.enemiesOnBoard--;
             }
         }
     }
