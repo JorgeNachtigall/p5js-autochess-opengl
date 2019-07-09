@@ -12,10 +12,10 @@ class Game {
         this.round = 3;
     }
 
-    newHero(id, life, attack, range) {
+    newHero(id) {
         for (let i = 0; i < 3; i++) {
             if (this.hero[i] == -1) {
-                this.hero[i] = new Hero(id, life, attack, range, false);
+                this.hero[i] = new Hero(id, false);
                 this.heroesOnBoard++;
                 return i;
             }

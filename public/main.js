@@ -20,21 +20,27 @@ function preload() {
         model: loadModel('src/obj_diana.obj'),
         texture: loadImage('src/txt_diana.png'),
         inventoryScale: 0.65,
-        name: 'Diana'
+        name: 'Diana',
+        attack: 50,
+        life: 100
     };
 
     models[1] = {
         model: loadModel('src/obj_volibear.obj'),
         texture: loadImage('src/txt_volibear.png'),
         inventoryScale: 0.45,
-        name: 'Volibear'
+        name: 'Volibear',
+        attack: 25,
+        life: 200
     };
 
     models[2] = {
         model: loadModel('src/obj_jinx.obj'),
         texture: loadImage('src/txt_jinx.png'),
         inventoryScale: 0.6,
-        name: 'Jinx'
+        name: 'Jinx',
+        attack: 75,
+        life: 75
     };
 
     hexagon = loadModel('src/obj_hexagon.obj');
@@ -92,7 +98,7 @@ function mouseClicked() {
     } else if (gamePhase == 2) {
         if (chess.interface.inventory.slots[chess.mouseTrackerInventory()] != undefined && chess.interface.inventory.slots[chess.mouseTrackerInventory()] != -1) {
             if (chess.heroesOnBoard < 3) {
-                dragHero = chess.newHero(chess.interface.inventory.slots[chess.mouseTrackerInventory()], 10000, 100, false);
+                dragHero = chess.newHero(chess.interface.inventory.slots[chess.mouseTrackerInventory()], false);
                 chess.interface.inventory.slots[chess.mouseTrackerInventory()] = -1;
                 gamePhase = 3;
             }

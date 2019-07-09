@@ -1,12 +1,11 @@
 class Hero {
-    constructor(id, life, attack, range, isEnemy) {
+    constructor(id, isEnemy) {
         this.id = id;
         this.name = models[this.id].name;
         this.position = createVector(0, 0, 0);
         this.visibility = true;
-        this.life = life;
-        this.attack = attack;
-        this.range = range;
+        this.life = models[this.id].life;
+        this.attack = models[this.id].attack;
         this.followMouse = false;
         this.isEnemy = isEnemy;
         this.blockPos = 0;
