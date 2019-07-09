@@ -63,7 +63,6 @@ function setup() {
     //battle log 
     battleLog = createDiv('<center> BATTLE LOG </center>');
     battleLog.id('battleLog');
-    //battleLog.position(0, 800);
     battleLog.id = 'battleLog';
     battleLog.style('height', '800px');
     battleLog.style('width', '400px');
